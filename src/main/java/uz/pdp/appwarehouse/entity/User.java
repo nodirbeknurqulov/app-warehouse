@@ -32,7 +32,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String username;
+
     private boolean active=true;
+
+    private String role;
 
     @ManyToMany
     private Set<Warehouse> warehouses;
