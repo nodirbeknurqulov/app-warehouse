@@ -11,37 +11,88 @@ import java.util.Optional;
 
 // Nurkulov Nodirbek 3/8/2022  12:21 PM
 
-@Service//service anotatsiyasi clasni bean qilib beradi
+@Service
+//service anotatsiyasi clasni bean qilib beradi
 public class MeasurementService {
 
     @Autowired
     MeasurementRepository measurementRepository;
 
-    //get measurements
+    /**
+     * GET ALL MEASUREMENTS
+     *
+     * @return List
+     */
     public List<Measurement> getMeasurements() {
-        List<Measurement> measurementList = measurementRepository.findAll();
-        return measurementList;
+        return measurementRepository.findAll();
     }
 
-    //get measurement by id
-    public String getMeasurementById(Integer id){
+
+    /**
+     * GET MEASUREMENT BY ID
+     *
+     * @param id Integer
+     * @return Result
+     */
+    public Result getMeasurementById(Integer id) {
         Optional<Measurement> optionalMeasurement = measurementRepository.findById(id);
-        if (optionalMeasurement.isPresent()){
+        if (optionalMeasurement.isPresent()) {
             Measurement measurement = optionalMeasurement.get();
-            return null;
+            measurement.setName(measurement.getName());
+            measurement.setActive(measurement.isActive());
+            return new Result(measurement, true);
         }
-        return null;
+        return new Result("measurement not found", false);
     }
 
-    //add measurement
+
+    /**
+     * ADD MEASUREMENT
+     *
+     * @param measurement Measurement
+     * @return Result
+     */
     public Result addMeasurementService(Measurement measurement) {
         boolean existsByName = measurementRepository.existsByName(measurement.getName());
         if (existsByName) {
-            return new Result("Bunday o'lchov birligi mavjud", false);
+            return new Result("This measurement already exist", false);
         }
         measurementRepository.save(measurement);
-        return new Result("Muvaffaqiyatli saqlandi", true);
+        return new Result("Measurement saved!!!", true);
     }
 
-    //GET, GET ONE, EDIT, DELETE
+
+    /**
+     * UPDATE MEASUREMENT BY ID
+     *
+     * @param measurement Measurement
+     * @return Result
+     */
+    public Result updateMeasurement(Integer id, Measurement measurement) {
+        Optional<Measurement> optionalMeasurement = measurementRepository.findById(id);
+        if (optionalMeasurement.isPresent()) {
+            Measurement newMeasurement = optionalMeasurement.get();
+            newMeasurement.setName(measurement.getName());
+            newMeasurement.setActive(measurement.isActive());
+            measurementRepository.save(newMeasurement);
+            return new Result("Measurement updated!!!", true);
+        }
+        return new Result("Measurement not found", false);
+    }
+
+
+    /**
+     * DELETE MEASUREMENT
+     *
+     * @param measurementId Integer
+     * @return Result
+     */
+    public Result deleteMeasurementById(Integer measurementId) {
+        boolean exists = measurementRepository.existsById(measurementId);
+        if (exists) {
+            measurementRepository.deleteById(measurementId);
+            return new Result("Measurement deleted!!!", true);
+        }
+        return new Result("Measurement not found!!!", false);
+    }
 }

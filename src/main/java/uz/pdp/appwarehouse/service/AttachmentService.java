@@ -29,6 +29,7 @@ public class AttachmentService {
 
         //
         Attachment attachment = new Attachment();
+        assert file != null;
         attachment.setName(file.getOriginalFilename());
         attachment.setSize(file.getSize());
         attachment.setContentType(file.getContentType());
@@ -41,4 +42,12 @@ public class AttachmentService {
         attachmentContentRepository.save(attachmentContent);
         return new Result("File saved!",true,savedAttachment.getId());
     }
+
+    // TODO: 3/21/2022
+    //  downloadFile,
+    //  add attachment,
+    //  get all attachments,
+    //  get attachment by id,
+    //  update attachment,
+    //  delete attachment
 }

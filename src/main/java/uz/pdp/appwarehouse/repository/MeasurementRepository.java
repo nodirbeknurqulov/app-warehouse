@@ -5,4 +5,6 @@ import uz.pdp.appwarehouse.entity.Measurement;
 
 public interface MeasurementRepository extends JpaRepository<Measurement,Integer> {
     boolean existsByName(String name);
+
+    boolean existsById(Integer id);
 }

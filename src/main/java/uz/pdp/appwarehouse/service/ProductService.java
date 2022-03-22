@@ -17,6 +17,13 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
+//
+//    {
+//        "name":"Tv",
+//            "categoryId":1,
+//            "photoId":1,
+//            "measurementId":1
+//    }
     @Autowired
     ProductRepository productRepository;
 
@@ -34,6 +41,7 @@ public class ProductService {
         if (existsByNameAndCategoryId) {
             return new Result("The product has in this category", false);
         }
+
         //CHECKING CATEGORY
         Optional<Category> optionalCategory = categoryRepository.findById(productDto.getCategoryId());
         if (!optionalCategory.isPresent())
@@ -59,4 +67,12 @@ public class ProductService {
         productRepository.save(product);
         return new Result("Product saved!!!",true);
     }
+
+    // TODO: 3/21/2022
+    //  get all products,
+    //  get product by id,
+    //  update product,
+    //  delete product
+
+
 }

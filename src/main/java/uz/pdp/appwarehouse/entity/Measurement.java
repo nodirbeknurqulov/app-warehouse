@@ -14,4 +14,5 @@ import javax.persistence.Id;
 @Data
 @Entity
 public class Measurement extends AbsEntity {
+
 }

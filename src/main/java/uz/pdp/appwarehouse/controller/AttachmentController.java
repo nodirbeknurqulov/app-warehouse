@@ -1,6 +1,6 @@
 package uz.pdp.appwarehouse.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,14 +13,13 @@ import java.io.IOException;
 // Nurkulov Nodirbek 3/8/2022  3:02 PM
 @RestController
 @RequestMapping("/attachment")
+@RequiredArgsConstructor
 public class AttachmentController {
 
-    @Autowired
-    AttachmentService attachmentService;
+    private final AttachmentService attachmentService;
 
     @PostMapping
-    public Result upload(MultipartHttpServletRequest request) throws IOException {
-        Result result = attachmentService.uploadFile(request);
-        return result;
+    public Result uploadFile(MultipartHttpServletRequest request) throws IOException {
+        return attachmentService.uploadFile(request);
     }
 }

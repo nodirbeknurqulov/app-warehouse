@@ -1,14 +1,13 @@
 package uz.pdp.appwarehouse.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uz.pdp.appwarehouse.entity.Category;
 import uz.pdp.appwarehouse.payload.CategoryDto;
 import uz.pdp.appwarehouse.payload.Result;
 import uz.pdp.appwarehouse.service.CategoryService;
+
+import java.util.List;
 
 // Nurkulov Nodirbek 3/8/2022  2:31 PM
 @RestController
@@ -18,9 +17,37 @@ public class CategoryController {
     @Autowired
     CategoryService categoryService;
 
+    /**
+     * GET ALL CATEGORIES
+     * @return List
+     */
+    @GetMapping
+    public List<Category> getAllCategories(){
+        return categoryService.getAllCategories();
+    }
+
+    /**
+     * GET CATEGORY BY ID
+     * @param id Integer
+     * @return Result
+     */
+    @GetMapping("/{id}")
+    public Result getCategoryById(@PathVariable Integer id){
+        return categoryService.getCategoryById(id);
+    }
+
+    /**
+     * ADD CATEGORY
+     * @param categoryDto Category
+     * @return Result
+     */
     @PostMapping
     public Result addCategory(@RequestBody CategoryDto categoryDto) {
-        Result result = categoryService.addCategory(categoryDto);
-        return result;
+        return categoryService.addCategory(categoryDto);
+    }
+
+    @PutMapping("/{id}")
+    public Result updateCategory(@RequestBody CategoryDto categoryDto, @PathVariable Integer id){
+        return categoryService.updateCategory(id, categoryDto);
     }
 }

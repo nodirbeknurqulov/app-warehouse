@@ -1,5 +1,6 @@
 package uz.pdp.appwarehouse.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.appwarehouse.entity.Measurement;
@@ -11,27 +12,70 @@ import java.util.List;
 // Nurkulov Nodirbek 3/8/2022  12:10 PM
 @RestController
 @RequestMapping("/measurement")
+@RequiredArgsConstructor
 public class MeasurementController {
 
-    @Autowired
-    MeasurementService measurementService;
+    private final MeasurementService measurementService;
 
+    /**
+     * GET ALL MEASUREMENTS
+     *
+     * @return List
+     */
     @GetMapping
-    public List<Measurement> getMeasurements(){
-        List<Measurement> measurements = measurementService.getMeasurements();
-        return measurements;
+    public List<Measurement> getMeasurements() {
+        return measurementService.getMeasurements();
     }
 
+
+    /**
+     * GET MEASUREMENT BY ID
+     *
+     * @param measurementId Integer
+     * @return Result
+     */
     @GetMapping("/{measurementId}")
-    public String getMeasurementById(@PathVariable Integer measurementId){
-        String measurementById = measurementService.getMeasurementById(measurementId);
-        return measurementById;
+    public Result getMeasurementById(@PathVariable Integer measurementId) {
+        return measurementService.getMeasurementById(measurementId);
     }
 
+
+    /**
+     * ADD MEASUREMENT
+     *
+     * @param measurement Measurement
+     * @return Result
+     */
     //bu klientdan malumotni tutib oluvchi method
-    @PostMapping//request body jsonni classga parse qilib beradi
+    //request body jsonni classga parse qilib beradi
+    @PostMapping
     public Result addMeasurementController(@RequestBody Measurement measurement) {
-        Result result = measurementService.addMeasurementService(measurement);
-        return result;
+        return measurementService.addMeasurementService(measurement);
     }
+
+
+    /**
+     * UPDATE MEASUREMENT BY ID
+     *
+     * @param measurement Measurement
+     * @return Result
+     */
+    @PutMapping("/{measurementId}")
+    public Result updateMeasurement(@RequestBody Measurement measurement, @PathVariable Integer measurementId) {
+        return measurementService.updateMeasurement(measurementId, measurement);
+    }
+
+
+    /**
+     * DELETE MEASUREMENT
+     *
+     * @param measurementId Integer
+     * @return Result
+     */
+    @DeleteMapping("/{measurementId}")
+    public Result deleteMeasurement(@PathVariable Integer measurementId) {
+        return measurementService.deleteMeasurementById(measurementId);
+    }
+
+
 }
