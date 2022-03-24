@@ -3,11 +3,9 @@ package uz.pdp.appwarehouse.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uz.pdp.appwarehouse.entity.Category;
-import uz.pdp.appwarehouse.entity.Measurement;
 import uz.pdp.appwarehouse.payload.CategoryDto;
 import uz.pdp.appwarehouse.payload.Result;
 import uz.pdp.appwarehouse.repository.CategoryRepository;
-import uz.pdp.appwarehouse.repository.MeasurementRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -55,13 +53,21 @@ public class CategoryService {
     }
 
 
-
     /**
      * ADD CATEGORY
+     *
      * @param categoryDto Category
      * @return Result
      */
     public Result addCategory(CategoryDto categoryDto) {
+        /*
+        bu yerda tekshirib ketdim agar xuddi shu parentId li va
+        shunaqa categoriya bolma u mavjud deb chiqaradi
+         */
+        boolean existsByNameAndParentCategoryId = categoryRepository.existsByNameAndParentCategoryId(categoryDto.getName(), categoryDto.getParentCategoryId());
+        if (existsByNameAndParentCategoryId) {
+            return new Result("category exist", false);
+        }
         Category category = new Category();
         category.setName(categoryDto.getName());
         if (categoryDto.getParentCategoryId() != null) {
@@ -75,42 +81,44 @@ public class CategoryService {
     }
 
 
-
     /**
      * UPDATE CATEGORY
-     * @param id Integer
+     *
+     * @param id          Integer
      * @param categoryDto Category
      * @return Result
      */
-    public Result updateCategory(Integer id, CategoryDto categoryDto){
-//        Optional<Category> optionalCategory = categoryRepository.findById(categoryDto.getParentCategoryId());
-//        if (optionalCategory.isPresent()){
-//            return new Result("Category updated!!!",true);
-//        }
+    public Result updateCategory(Integer id, CategoryDto categoryDto) {
 
-        //checking category name
-        boolean existsByName = categoryRepository.existsByName(categoryDto.getName());
-        if (existsByName){
+        boolean existsByNameAndParentCategoryId = categoryRepository.existsByNameAndParentCategoryIdAndId(categoryDto.getName(), categoryDto.getParentCategoryId(), id);
+        if (existsByNameAndParentCategoryId) {
             Category category = new Category();
             category.setName(categoryDto.getName());
 
-
-
+            if (categoryDto.getParentCategoryId() != null) {
+                Optional<Category> optionalParentCategory = categoryRepository.findById(categoryDto.getParentCategoryId());
+                if (!optionalParentCategory.isPresent())
+                    return new Result("Father category doesn't exist", false);
+                category.setParentCategory(optionalParentCategory.get());
+            }
+            categoryRepository.save(category);
+            return new Result("Category updated!!!", true);
         }
-        return null;
-
+        return new Result("Category not found", false);
     }
 
-
-
-
-
-
-
-
-    // TODO: 3/21/2022
-    //  get all categories,
-    //  get category by id,
-    //  update category,
-    //  delete category
+    /**
+     * DELETE CATEGORY
+     *
+     * @param id Integer
+     * @return Result
+     */
+    public Result deleteCategory(Integer id) {
+        try {
+            categoryRepository.deleteById(id);
+            return new Result("Category deleted!", true);
+        } catch (Exception e) {
+            return new Result("Error", false);
+        }
+    }
 }

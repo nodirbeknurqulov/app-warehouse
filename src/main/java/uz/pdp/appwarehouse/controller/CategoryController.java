@@ -46,8 +46,24 @@ public class CategoryController {
         return categoryService.addCategory(categoryDto);
     }
 
+    /**
+     * UPDATE CATEGORY BY ID
+     * @param categoryDto CategoryDto
+     * @param id Integer
+     * @return Result
+     */
     @PutMapping("/{id}")
     public Result updateCategory(@RequestBody CategoryDto categoryDto, @PathVariable Integer id){
         return categoryService.updateCategory(id, categoryDto);
+    }
+
+    /**
+     * DELETE CATEGORY BY ID
+     * @param id Integer
+     * @return Result
+     */
+    @DeleteMapping("/{id}")
+    public Result deleteCategory(@PathVariable Integer id){
+        return categoryService.deleteCategory(id);
     }
 }
